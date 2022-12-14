@@ -12,8 +12,9 @@ def find_con_path():
     with open(pathstr, "r") as jsonfile:
         pathInfo = json.load(jsonfile)
     for subject in pathInfo["connection"]["path_list"]:
+        path = pathInfo["connection"]["path_list"][subject]
         try:
-            path = pathInfo["connection"]["path_list"][subject]
+            os.listdir(path)
             return path
         except: continue
 
@@ -39,7 +40,7 @@ def send_to_gbq(df, dataset, tb_name,
     #새로 테이블 만들것이라면 굳이 빅쿼리에서 미리 스킴 짤필요 없이 여기서 테이블 이름 지정하면 됩니다.
     destination_table = f'{dataset}.{tb_name}'
 
-    print("데이터 빅쿼리로 옮길 준비")
+    # print("데이터 빅쿼리로 옮길 준비")
     pandas_gbq.to_gbq(df, destination_table,project_id,if_exists=if_exists,credentials=credentials)
     print("빅쿼리로 이관 완료")
 
@@ -68,13 +69,14 @@ def get_and_refresh_accesstoken(authorization_key, connection_file_path):
     refresh_rq = requests.request("POST", refresh_token_url, headers = headers, data = data)
 
     token_json = refresh_rq.json()
-    # 이거 다 된 다음에는 주석처리해야함. 안그러면 토큰 값들 다 나옴
-    print(token_json)
+
     new_refresh_token = token_json["refresh_token"]
     new_refresh_token_exp_date = token_json["refresh_token_expires_at"]
     new_access_token = token_json["access_token"]
     new_access_token_exp_date = token_json["expires_at"]
     access_scopes = token_json["scopes"]
+
+    print("ㄱㅅtkn : ", new_refresh_token, " , ", new_refresh_token_exp_date, "까지")
 
     # 토큰 데이터 업데이트하기
     if thereis_json :
