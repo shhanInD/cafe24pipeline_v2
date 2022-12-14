@@ -1,0 +1,9 @@
+{
+    "connection": {
+        "path_list": {
+            "shhanInD": "/Users/waijeulli/Wisely/cafe24pipeline/connection/",
+            "myleeInD": "/Users/wisely/Dropbox/Future/Data analyst/Company/wisely/Cafe24API/",
+            "AWS": "/home/ubuntu/automation/Cafe24Pipeline/cafe24pipeline/connection/"
+        }
+    }
+}
