@@ -18,7 +18,7 @@ def backfill(backfill_startdate,
     privacy_columns = [i for i in privacy_str.split(",")]
 
     acstok, asctok_expdt, reftok, reftok_expdt = get_and_refresh_accesstoken(auth_key, con_path)
-    customerprivacy_data_ = pd.DataFrame(columns=privacy_columns)
+    customerprivacy_data = pd.DataFrame(columns=privacy_columns)
 
     date_range = list(datetime.strftime(i, "%Y-%m-%d") for i in pd.date_range(backfill_startdate, backfill_enddate, freq="D"))
 
@@ -52,7 +52,7 @@ def backfill(backfill_startdate,
             #         print(f"{hour}시와 {nexthour}+1사이 회원가입자 수 : {len(data1)}")
                 try:
                     new_data = data1[privacy_columns]
-                    customerprivacy_data = pd.concat([customerprivacy_data_, new_data])
+                    customerprivacy_data = pd.concat([customerprivacy_data, new_data])
             #             print(len(new_data))
                     mi +=len(new_data)
                 except Exception as e:
@@ -87,7 +87,7 @@ def backfill(backfill_startdate,
                     time.sleep(0.5)
                     try:
                         new_data = data1[privacy_columns]
-                        customerprivacy_data = pd.concat([customerprivacy_data_, new_data])
+                        customerprivacy_data = pd.concat([customerprivacy_data, new_data])
                         #             print(len(new_data))
                         mi += len(new_data)
                     except Exception as e1:
@@ -150,7 +150,7 @@ def save_log(df, path, filename):
     # path 폴더에 한 파일이라도 있으면
     else :
         # path폴더 안에 저장할 이름의 파일이 있다면, 해당 파일에 Concat
-        if path+filename+".xlsx" in os.listdir(path):
+        if filename+".xlsx" in os.listdir(path):
             prior = pd.read_excel(path+filename+".xlsx")
             after = pd.concat([prior, df])
             after.to_excel(path+filename+".xlsx", index=False)
