@@ -6,18 +6,17 @@ import requests
 import pandas as pd
 import time
 from datetime import datetime, timedelta
-from utils import get_headers, get_and_refresh_accesstoken, send_to_gbq
+from utils import get_headers
 
 
 def backfill(backfill_startdate,
              backfill_enddate,
-             auth_key, con_path,
+             acstok,
              privacy_str='member_id,name,birthday,gender,cellphone,email,created_date,zipcode,city,address1,address2,recommend_id',
              limit=1000, version="2022-09-01",
             ):
     privacy_columns = [i for i in privacy_str.split(",")]
 
-    acstok, asctok_expdt, reftok, reftok_expdt = get_and_refresh_accesstoken(auth_key, con_path)
     customerprivacy_data = pd.DataFrame(columns=privacy_columns)
 
     date_range = list(datetime.strftime(i, "%Y-%m-%d") for i in pd.date_range(backfill_startdate, backfill_enddate, freq="D"))
@@ -103,13 +102,12 @@ def backfill(backfill_startdate,
 
 
 
-def frontfill(auth_key, con_path, 
+def frontfill(acstok,
               interval_minute = 5,
               privacy_str='member_id,name,birthday,gender,cellphone,email,created_date,zipcode,city,address1,address2,recommend_id',
              limit=1000, version="2022-09-01"):
     privacy_columns = [i for i in privacy_str.split(",")]
 
-    acstok, asctok_expdt, reftok, reftok_expdt = get_and_refresh_accesstoken(auth_key, con_path)
     
     customerprivacy_data_ = pd.DataFrame(columns=privacy_columns)
     now = datetime.now()
