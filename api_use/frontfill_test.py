@@ -4,6 +4,7 @@ from utils import find_con_path, send_to_gbq
 from customerprivacy import frontfill as cp_ff
 from customerprivacy import save_log as cp_sl
 
+
 when = datetime.datetime.strftime(datetime.date.today(), "%Y-%m-%d")
 
 # Customer Privacy 가져오기 불러오기
