@@ -112,11 +112,11 @@ def frontfill(acstok,
     customerprivacy_data_ = pd.DataFrame(columns=privacy_columns)
     now = datetime.now()
     # 현재 시간에서 5분 빼기
-    last_min = now-timedelta(minutes= 5)
+    last_min = now-timedelta(minutes= interval_minute)
     # 5분 단위로 변경 (예: last_min이 12시16분이면 12시 15분으로 변경)
     frontfill_endtime = last_min.replace(minute=last_min.minute-last_min.minute%interval_minute, second = 0, microsecond = 0)
     # frontfill_endtime보다 5분 전. 
-    frontfill_starttime = frontfill_endtime-timedelta(minutes=5)
+    frontfill_starttime = frontfill_endtime-timedelta(minutes=interval_minute)
     # frontfill_starttime, frontfill_endtime을 문자열로 변ㄱ셩
     frontfill_starttime_str = datetime.strftime(frontfill_starttime, "%Y-%m-%d %H:%M:00")
     frontfill_endtime_str = datetime.strftime(frontfill_endtime, "%Y-%m-%d %H:%M:00")
