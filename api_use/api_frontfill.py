@@ -37,7 +37,7 @@ if len(o_frontfill) > 0 :
         orders_frontfill_distinct_rows = o_frontfill[[
             "order_id", "member_id", "transaction_id", "order_date", "payment_date",  "order_from_mobile",
             "use_escrow", "actual_order_amount",
-            "payment_amount", "cancel_date",
+            "payment_amount", "cancel_date", "subscription"
         ]]
         orders_frontfill_distinct_rows["actual_order_amount"] = orders_frontfill_distinct_rows["actual_order_amount"].astype('str')
         orders_frontfill_items = o_frontfill[["order_id", "items"]]
