@@ -155,9 +155,10 @@ def frontfill(acstok,
     #     'cellphone',
     #     'shipping_code'
     # ]
-
-    for aoa in from_actual_order_amount:
-       orders_data[aoa] = orders_data['actual_order_amount'].apply(lambda x: x[aoa])  # float 오류로 제거(by.tax)
+    if len(orders_data) > 0:
+        for aoa in from_actual_order_amount:
+           orders_data[aoa] = orders_data['actual_order_amount'].apply(lambda x: x[aoa])  # float 오류로 제거(by.tax)
+    else: pass
 
     # for rcv in from_receivers:
     #    orders_data[rcv] = orders_data['receivers'].apply(lambda x: ",".join(str(s) for s in [i[rcv] for i in x]))
