@@ -30,6 +30,7 @@ whentime_2 = datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%d %H:%M
 data_qnt = len(cp_frontfill)
 print(whentime_2, "에 회원", data_qnt, "명의 데이터가 추가됩니다.")
 
+# Order, OrderItems 가져오기 불러오기
 o_frontfill = o_ff(acstok)
 if len(o_frontfill) > 0 :
     try :
