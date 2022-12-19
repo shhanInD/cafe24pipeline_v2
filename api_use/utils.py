@@ -42,7 +42,7 @@ def send_to_gbq(df, dataset, tb_name,
 
     # print("데이터 빅쿼리로 옮길 준비")
     pandas_gbq.to_gbq(df, destination_table,project_id,if_exists=if_exists,credentials=credentials)
-    print("빅쿼리로 이관 완료")
+    # print("빅쿼리로 이관 완료")
 
 def get_and_refresh_accesstoken(authorization_key, connection_file_path):
     # 경로내 액세스/리프레시토큰 파일 있는지 확인하기
