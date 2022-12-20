@@ -97,6 +97,7 @@ def save_log(df, path, filename):
 
 whendate = date.today()
 then = datetime.strftime(whendate - timedelta(days = 7), "%Y-%m-%d")
+# print(then)
 
 
 # Customer Privacy 가져오기 불러오기
@@ -149,10 +150,10 @@ try :
     save_log(orders_backfill_distinct_rows, log_path_orders, then)
     save_log(orders_backfill_items_explode, log_path_orderitems, then)
 
-    send_to_gbq(orders_backfill_distinct_rows, "HSH","tbOrder_raw", json_file_path=json_file_path, if_exists="append")
-    send_to_gbq(orders_backfill_items_explode, "HSH","tbOrderItems_raw", json_file_path=json_file_path, if_exists="append")
+    send_to_gbq(orders_backfill_distinct_rows, "dsCafe24","tbOrder_raw", json_file_path=json_file_path, if_exists="append")
+    send_to_gbq(orders_backfill_items_explode, "dsCafe24","tbOrderItems_raw", json_file_path=json_file_path, if_exists="append")
 
     nowtime = datetime.now()
-    print(nowtime, "에", len(orders_backfill_distinct_rows), "개의 데이터가 전송완료됨.")
+    print(nowtime, "에", len(orders_backfill_distinct_rows), "개의 ", then, "의 데이터가 전송완료됨.")
 except Exception as e:
     print(e)
