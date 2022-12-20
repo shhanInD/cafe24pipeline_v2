@@ -115,7 +115,7 @@ try :
     orders_backfill_distinct_rows = orders_backfill[[
         "order_id", "member_id", "transaction_id", "order_date", "payment_date", "order_from_mobile",
         "use_escrow", "actual_order_amount",
-        "payment_amount", "cancel_date", 'canceled', 'paid', 'shipping_status', 'return', 'exchange'
+        "payment_amount", "cancel_date", 'canceled', 'paid', 'shipping_status', 'return', 'exchange', 'subscription'
         #'cancellation', 'return', 'exchange'
     ]]
     orders_backfill_distinct_rows["actual_order_amount"] = orders_backfill_distinct_rows["actual_order_amount"].astype('str', errors='ignore')
