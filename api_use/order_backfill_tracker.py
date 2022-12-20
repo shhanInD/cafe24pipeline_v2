@@ -98,10 +98,7 @@ def save_log(df, path, filename):
 whendate = date.today()
 when = datetime.strftime(whendate, "%Y-%m-%d")
 then = datetime.strftime(whendate - timedelta(days = 6), "%Y-%m-%d")
-print(then)
-print(when)
 
-nowtime = datetime.now()
 
 # Customer Privacy 가져오기 불러오기
 con_path = find_con_path()
@@ -113,38 +110,45 @@ json_file_path = con_path+"dbwisely-v2-01bfe15ef302.json"
 acstok, asctok_expdt, reftok, reftok_expdt = get_and_refresh_accesstoken(auth_key, con_path)
 
 orders_backfill = backfill(then, when, acstok)
-orders_backfill_distinct_rows = orders_backfill[[
-    "order_id", "member_id", "transaction_id", "order_date", "payment_date", "order_from_mobile",
-    "use_escrow", "actual_order_amount",
-    "payment_amount", "cancel_date", 'canceled', 'paid', 'shipping_status', 'return', 'exchange'
-    #'cancellation', 'return', 'exchange'
-]]
-orders_backfill_distinct_rows["actual_order_amount"] = orders_backfill_distinct_rows["actual_order_amount"].astype('str', errors='ignore')
-orders_backfill_distinct_rows["return_date"] = orders_backfill_distinct_rows["return"].apply(lambda x : x[0]["items"][0]["cancel_date"] if len(x) > 0 else "")
-orders_backfill_distinct_rows["exchange_date"] = orders_backfill_distinct_rows["exchange"].apply(lambda x : x[0]["items"][0]["cancel_date"] if len(x) > 0 else "")
-orders_backfill_distinct_rows = orders_backfill_distinct_rows.drop(["return", "exchange"], axis = 1)
+
+try :
+    orders_backfill_distinct_rows = orders_backfill[[
+        "order_id", "member_id", "transaction_id", "order_date", "payment_date", "order_from_mobile",
+        "use_escrow", "actual_order_amount",
+        "payment_amount", "cancel_date", 'canceled', 'paid', 'shipping_status', 'return', 'exchange'
+        #'cancellation', 'return', 'exchange'
+    ]]
+    orders_backfill_distinct_rows["actual_order_amount"] = orders_backfill_distinct_rows["actual_order_amount"].astype('str', errors='ignore')
+    orders_backfill_distinct_rows["return_date"] = orders_backfill_distinct_rows["return"].apply(lambda x : x[0]["items"][0]["cancel_date"] if len(x) > 0 else "")
+    orders_backfill_distinct_rows["exchange_date"] = orders_backfill_distinct_rows["exchange"].apply(lambda x : x[0]["items"][0]["cancel_date"] if len(x) > 0 else "")
+    orders_backfill_distinct_rows = orders_backfill_distinct_rows.drop(["return", "exchange"], axis = 1)
 
 
-orders_backfill_items = orders_backfill[["order_id", "items"]]
-import numpy as np
-item_explode = np.dstack(
-    (np.repeat(
-        orders_backfill_items["order_id"].values, list(map(len, orders_backfill_items["items"].values))
-        ),
-    np.concatenate(orders_backfill_items["items"].values)))
-orders_backfill_items_explode = pd.DataFrame(data = item_explode[0], columns = orders_backfill_items.columns)
-def delete_unneeded(item):
-    item.pop("additional_option_values")
-    item.pop("original_item_no")
-    item.pop("options")
-    return item
-orders_backfill_items_explode["items"] = orders_backfill_items_explode["items"].apply(delete_unneeded)
-orders_backfill_items_explode["items"] = orders_backfill_items_explode["items"].astype('str', errors='ignore')
-orders_backfill_items_explode["items"] = orders_backfill_items_explode["items"].apply(lambda x : x.replace("None", "''"))
+    orders_backfill_items = orders_backfill[["order_id", "items"]]
+    import numpy as np
+    item_explode = np.dstack(
+        (np.repeat(
+            orders_backfill_items["order_id"].values, list(map(len, orders_backfill_items["items"].values))
+            ),
+        np.concatenate(orders_backfill_items["items"].values)))
+    orders_backfill_items_explode = pd.DataFrame(data = item_explode[0], columns = orders_backfill_items.columns)
+    def delete_unneeded(item):
+        item.pop("additional_option_values")
+        item.pop("original_item_no")
+        item.pop("options")
+        return item
+    orders_backfill_items_explode["items"] = orders_backfill_items_explode["items"].apply(delete_unneeded)
+    orders_backfill_items_explode["items"] = orders_backfill_items_explode["items"].astype('str', errors='ignore')
+    orders_backfill_items_explode["items"] = orders_backfill_items_explode["items"].apply(lambda x : x.replace("None", "''"))
 
-orders_backfill_distinct_rows = orders_backfill_distinct_rows.drop_duplicates()
-orders_backfill_items_explode = orders_backfill_items_explode.drop_duplicates()
+    orders_backfill_distinct_rows = orders_backfill_distinct_rows.drop_duplicates()
+    orders_backfill_items_explode = orders_backfill_items_explode.drop_duplicates()
 
 
-send_to_gbq(orders_backfill_distinct_rows, "dsCafe24","tbOrder_track7days", json_file_path=json_file_path, if_exists="replace")
-send_to_gbq(orders_backfill_items_explode, "dsCafe24","tbOrderItems_track7days", json_file_path=json_file_path, if_exists="replace")
+    send_to_gbq(orders_backfill_distinct_rows, "dsCafe24","tbOrder_track7days", json_file_path=json_file_path, if_exists="replace")
+    send_to_gbq(orders_backfill_items_explode, "dsCafe24","tbOrderItems_track7days", json_file_path=json_file_path, if_exists="replace")
+
+    nowtime = datetime.now()
+    print(nowtime, "에", len(orders_backfill_distinct_rows), "개의 데이터가 전송완료됨.")
+except Exception as e:
+    print(e)
