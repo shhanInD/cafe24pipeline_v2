@@ -119,7 +119,7 @@ def get_headers(new_access_token, vers):
     return head
 
 def send_slack_message(text):
-    url = 'https://hooks.slack.com/services/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'
+    url = 'https://slack webhook url'
     payload = {
         "blocks": [
             {"type": "header", "text": {"type": "plain_text", "text": ":bell:코드 오류:bell:"}},
