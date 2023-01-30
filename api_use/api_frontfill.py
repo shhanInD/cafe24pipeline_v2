@@ -15,12 +15,13 @@ whentime = datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%d %H:%M:%
 
 # Customer Privacy 가져오기 불러오기
 con_path = find_con_path()
-with open(con_path+"connectionInfo.json", "r") as f:
+con_file_name = "connectionInfo_CustomerPrivacy"
+with open(con_path+f"{con_file_name}.json", "r") as f:
     data = json.load(f)
 auth_key = data["auth_key"]
 json_file_path = con_path+"dbwisely-v2-01bfe15ef302.json"
 
-acstok, asctok_expdt, reftok, reftok_expdt = get_and_refresh_accesstoken(auth_key, con_path)
+acstok, asctok_expdt, reftok, reftok_expdt = get_and_refresh_accesstoken(auth_key, con_path, con_file_name)
 
 cp_frontfill = cp_ff(acstok)
 log_path = con_path.replace("/connection/", "/log/dbMembers/customerprivacy/")

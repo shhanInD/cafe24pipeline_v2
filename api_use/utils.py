@@ -44,12 +44,12 @@ def send_to_gbq(df, dataset, tb_name,
     pandas_gbq.to_gbq(df, destination_table,project_id,if_exists=if_exists,credentials=credentials)
     # print("빅쿼리로 이관 완료")
 
-def get_and_refresh_accesstoken(authorization_key, connection_file_path):
+def get_and_refresh_accesstoken(authorization_key, connection_file_path, file_name):
     # 경로내 액세스/리프레시토큰 파일 있는지 확인하기
     thereis_json = False
     files = [f for f in os.listdir(connection_file_path)]
-    con_json_file_path = connection_file_path+"connectionInfo.json"
-    if "connectionInfo.json" in files:
+    con_json_file_path = connection_file_path+f"{file_name}.json"
+    if f"{file_name}.json" in files:
         with open(con_json_file_path, "r") as jsonfile:
             data = json.load(jsonfile)
         refresh_token = data["refresh_token"]
@@ -117,5 +117,15 @@ def get_headers(new_access_token, vers):
         'X-Cafe24-Api-Version': vers
     }
     return head
+
+def send_slack_message(text):
+    url = 'https://hooks.slack.com/services/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'
+    payload = {
+        "blocks": [
+            {"type": "header", "text": {"type": "plain_text", "text": ":bell:코드 오류:bell:"}},
+            {"type": "section", "text": {"type": "mrkdwn", "text": text}},
+        ]
+    }
+    requests.post(url, json=payload)
 
 

@@ -13,7 +13,7 @@ def backfill(backfill_startdate,
              backfill_enddate,
              acstok,
              privacy_str='member_id,name,birthday,gender,cellphone,email,created_date,zipcode,city,address1,address2,recommend_id',
-             limit=1000, version="2022-09-01",
+             limit=1000, version="2022-12-01",
             ):
     privacy_columns = [i for i in privacy_str.split(",")]
 
@@ -60,7 +60,8 @@ def backfill(backfill_startdate,
 #                 print(timeslot, "에 회원가입한 수 : ",mi)
         else:
             next_date = date
-            for hour in [0, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]:
+            # for hour in [0, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]:
+            for hour in [0, 7, 8, 19, 20, 21, 22, 23]:
                 if hour == 9:
                     hour = "09"
                     nexthour = "10"

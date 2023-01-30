@@ -1,7 +1,6 @@
 import json
 from utils import find_con_path
 import requests
-import os
 import math
 import pandas as pd
 import time
@@ -14,7 +13,7 @@ def backfill(backfill_startdate,
              backfill_enddate,
              acstok,
              orders_str='order_id,order_date,payment_date,subscription,member_id,payment_amount,payment_method_name,payment_method,order_from_mobile,use_escrow,transaction_id,cancel_date,actual_order_amount,items,receivers,buyer,cancellation,return,exchange,paid,canceled,shipping_status',
-             limit=1000, version="2022-09-01",
+             limit=1000, version="2022-12-01",
              ):
     orders_columns = [i for i in orders_str.split(",")]
     orders_data = pd.DataFrame(columns=orders_columns)
@@ -95,19 +94,21 @@ def save_log(df, path, filename):
     df.to_excel(path + filename + ".xlsx", index=False)
 
 
-whendate = date.today()
-then = datetime.strftime(whendate - timedelta(days = 7), "%Y-%m-%d")
+# whendate = date.today()
+# then = datetime.strftime(whendate - timedelta(days = 7), "%Y-%m-%d")
+then = "2023-01-18"
 # print(then)
 
 
 # Customer Privacy 가져오기 불러오기
 con_path = find_con_path()
-with open(con_path+"conenction_fororderbackfill.json", "r") as f:
+con_file_name = "conenction_fororderbackfill"
+with open(con_path+f"{con_file_name}.json", "r") as f:
     data = json.load(f)
 auth_key = data["auth_key"]
 json_file_path = con_path+"dbwisely-v2-01bfe15ef302.json"
 
-acstok, asctok_expdt, reftok, reftok_expdt = get_and_refresh_accesstoken(auth_key, con_path)
+acstok, asctok_expdt, reftok, reftok_expdt = get_and_refresh_accesstoken(auth_key, con_path, con_file_name)
 
 orders_backfill = backfill(then, then, acstok)
 
